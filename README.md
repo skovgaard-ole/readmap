@@ -1,5 +1,7 @@
 # readmap
 
+[![CI](https://github.com/skovgaard-ole/readmap/actions/workflows/ci.yml/badge.svg)](https://github.com/skovgaard-ole/readmap/actions/workflows/ci.yml)
+
 Visualise long sequence reads (Oxford Nanopore, PacBio) mapped onto a reference
 by BLAST, classified by how their alignment divides.
 
@@ -22,7 +24,7 @@ compiler** in the picture — the PDF is written directly, and nothing shells ou
 Get the code, then pick the line for your platform:
 
 ```bash
-git clone https://github.com/<your-account>/readmap.git
+git clone https://github.com/skovgaard-ole/readmap.git
 cd readmap
 ```
 

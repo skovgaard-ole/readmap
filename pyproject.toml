@@ -31,6 +31,11 @@ dev = [
     "ruff>=0.5",
 ]
 
+[project.urls]
+Homepage = "https://github.com/skovgaard-ole/readmap"
+Repository = "https://github.com/skovgaard-ole/readmap"
+Issues = "https://github.com/skovgaard-ole/readmap/issues"
+
 [project.scripts]
 readmap = "readmap:main"
 
