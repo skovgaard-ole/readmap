@@ -1,0 +1,37 @@
+# Citation metadata. GitHub renders a "Cite this repository" button from this
+# file, and Zenodo reads it when archiving a release, so the DOI record carries
+# these fields rather than whatever Zenodo can infer from the repository.
+#
+# Validate with: pip install cffconvert && cffconvert --validate
+cff-version: 1.2.0
+message: "If you use this software, please cite it using these metadata."
+title: readmap
+abstract: >-
+  Visualisation of assembly errors, prophage induction and genomic variation by
+  re-mapping long sequence reads. readmap classifies every read by how its BLAST
+  alignment divides - contiguously, or into pieces that map far apart, in
+  opposite orientation, or onto a different contig - and draws the result as a
+  wide multi-page map plus an interactive genome browser. Reads that divide are
+  evidence of structural variation, inversions, transposition, phage excision or
+  circularity.
+type: software
+version: 1.0.0
+date-released: "2026-09-10"
+license: MIT
+repository-code: "https://github.com/skovgaard-ole/readmap"
+authors:
+  - family-names: Skovgaard
+    given-names: Ole
+    email: olesk@ruc.dk
+    affiliation: Roskilde University
+    # orcid: "https://orcid.org/0000-0000-0000-0000"
+keywords:
+  - bioinformatics
+  - genomics
+  - long-read sequencing
+  - nanopore
+  - PacBio
+  - BLAST
+  - structural variation
+  - prophage
+  - phase variation
