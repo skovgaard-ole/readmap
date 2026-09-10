@@ -9,7 +9,8 @@ line that cut every gene name to its last five characters. Those citations are
 only checkable while the file is here.
 
 To read the algorithm rather than the code, `code_structure.md` §5 states it
-step by step; `port_plan.md` is the original audit of this file and the plan the
-Python package was built from.
+step by step. `port_plan.md`, beside this file, is the original audit of the
+Perl and the plan the Python package was built from — also historical, and also
+not maintained.
 
 Requires Perl and Ghostscript, neither of which `readmap` needs.

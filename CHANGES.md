@@ -1,7 +1,7 @@
 # Changes from `read_print_23.pl`
 
 Every way the Python port's output differs from the Perl's, and why. Finding
-IDs (`B01` …) refer to the audit in `port_plan.md` §4.
+IDs (`B01` …) refer to the audit in `legacy/port_plan.md` §4.
 
 The Perl original is in this repository at **`legacy/read_print_23.pl`**, so the
 line citations below (`read_print_23.pl:1141`) can be followed.

@@ -1,6 +1,6 @@
 """GenBank reference parser: contig lengths, project metadata, and features.
 
-Differences from the Perl (see ``port_plan.md`` §4):
+Differences from the Perl (see ``legacy/port_plan.md`` §4):
 
 * Metadata fields default to ``""`` instead of being left undefined, which is
   what killed the Perl on any record lacking ``BioProject:`` (finding B13).

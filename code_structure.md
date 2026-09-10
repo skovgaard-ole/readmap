@@ -3,7 +3,7 @@
 **Package:** `readmap` 1.0.0 · Python ≥ 3.10 · matplotlib + numpy
 **Scope of this document:** what the code in `readmap/` does today, module by module, and the algorithms and invariants a maintainer has to respect.
 
-Companion documents: `README.md` (how to use it), `CHANGES.md` (how the output differs from the `read_print_23.pl` original), `port_plan.md` (the audit of that original and the plan this package was built from — historical, not maintained).
+Companion documents: `README.md` (how to use it), `CHANGES.md` (how the output differs from the `legacy/read_print_23.pl` original), `legacy/port_plan.md` (the audit of that original and the plan this package was built from — historical, not maintained).
 
 ---
 
@@ -671,7 +671,7 @@ These are the rules that keep the printed map, the browser and the exports agree
 | `README.md` | user manual: install, use, browse, output, options |
 | `CHANGES.md` | every way the output differs from `read_print_23.pl` |
 | `code_structure.md` | this document |
-| `port_plan.md` | the audit of the Perl original and the plan this package was built from — historical, not maintained |
+| `legacy/port_plan.md` | the audit of the Perl original and the plan this package was built from — historical, not maintained. It sits beside the Perl it audits |
 | `CLAUDE.md` | project instructions for AI assistants |
 | `pyproject.toml` | **the single source of truth for packaging**: dependencies, the `dev` extra (`pytest`, `ruff`), `readmap = "readmap:main"`, `browser/static/*` as package data, the MIT licence, and the ruff and pytest configuration. There is no `requirements.txt` — it duplicated the dependency list and drifted from it |
 | `LICENSE` | MIT |
