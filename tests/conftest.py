@@ -23,8 +23,8 @@ from pathlib import Path
 
 import pytest
 
-from readmap.models import Junction, ReadClass
-from readmap.params import Params
+from readrift.models import Junction, ReadClass
+from readrift.params import Params
 
 CONTIG_LENGTHS = {"ctgA": 40_000, "ctgB": 12_000}
 

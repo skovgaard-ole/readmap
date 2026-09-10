@@ -1,6 +1,6 @@
 # `read_print_23.pl` — the Perl original
 
-This is the program `readmap` was ported from. It is **not maintained and not
+This is the program `readrift` was ported from. It is **not maintained and not
 run**; it is kept here as the reference the port was audited against.
 
 `CHANGES.md` documents every way the Python output differs from this program's,
@@ -13,4 +13,4 @@ step by step. `port_plan.md`, beside this file, is the original audit of the
 Perl and the plan the Python package was built from — also historical, and also
 not maintained.
 
-Requires Perl and Ghostscript, neither of which `readmap` needs.
+Requires Perl and Ghostscript, neither of which `readrift` needs.

@@ -261,7 +261,7 @@ change did not affect your run.
   turns a classification rule *off*; it exists because that rule is the one
   judgement call here that is not in the Perl, and a run that needs to be
   compared against an older one has to be able to make it.
-- **An interactive genome browser**: `readmap browse <cache>` opens the run in a
+- **An interactive genome browser**: `readrift browse <cache>` opens the run in a
   web browser — pan and zoom the reference, with a coverage track, the gene
   annotations, the read pileup coloured by class and carrying the map's own
   arrow vocabulary (direction chevron, double chevron for a contig join, ring
@@ -277,7 +277,7 @@ change did not affect your run.
   then discarded) and stored in the cache. **This is cache format 2**: a cache
   written by an earlier version is rebuilt rather than misread.
 - **A new output file, written by default.** Every run now also writes
-  `<prefix>.readmapdb.npz`, the cache that browser reads. It appears beside the
+  `<prefix>.readriftdb.npz`, the cache that browser reads. It appears beside the
   PDF and is typically tens of MB. Reading and classifying a gigabyte-scale
   BTOP file takes minutes; the cache makes every later browsing session start in
   about a second. `--no-cache` skips it; `--no-pdf` writes only it. The numbers

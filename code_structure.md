@@ -1,7 +1,7 @@
-# `readmap` — Code Structure
+# `readrift` — Code Structure
 
-**Package:** `readmap` 1.0.0 · Python ≥ 3.10 · matplotlib + numpy
-**Scope of this document:** what the code in `readmap/` does today, module by module, and the algorithms and invariants a maintainer has to respect.
+**Package:** `readrift` 1.0.0 · Python ≥ 3.10 · matplotlib + numpy
+**Scope of this document:** what the code in `readrift/` does today, module by module, and the algorithms and invariants a maintainer has to respect.
 
 Companion documents: `README.md` (how to use it), `CHANGES.md` (how the output differs from the `legacy/read_print_23.pl` original), `legacy/port_plan.md` (the audit of that original and the plan this package was built from — historical, not maintained).
 
@@ -14,16 +14,16 @@ Given
 - a **reference** sequence (GenBank `.gb` or FASTA `.fa`, optionally gzipped), and
 - a **BLAST alignment** of long reads (Oxford Nanopore / PacBio) against it, in BLAST's tabular `BTOP` format,
 
-`readmap` classifies every read by *how it maps* — contiguously, or divided into pieces — and draws a wide-format, multi-page map: the reference as an x-axis, every read as a horizontal line above (plus strand) or below (minus strand) it, with arrowheads and colour encoding the kind of discontinuity. The PDF is written directly by matplotlib; there is no PostScript stage and no Ghostscript.
+`readrift` classifies every read by *how it maps* — contiguously, or divided into pieces — and draws a wide-format, multi-page map: the reference as an x-axis, every read as a horizontal line above (plus strand) or below (minus strand) it, with arrowheads and colour encoding the kind of discontinuity. The PDF is written directly by matplotlib; there is no PostScript stage and no Ghostscript.
 
 Reads whose pieces map far apart, in opposite orientation, or onto a different contig are evidence of **structural variation, inversions, transposition, phage excision or circularity**. The map makes them visible as a class rather than one at a time.
 
 ```bash
-python -m readmap AP027148.gb DRR325755.btop -x 10        # -> DRR325755.pdf + .readmapdb.npz
-python -m readmap browse DRR325755.readmapdb.npz          # -> interactive genome browser
+python -m readrift AP027148.gb DRR325755.btop -x 10        # -> DRR325755.pdf + .readriftdb.npz
+python -m readrift browse DRR325755.readriftdb.npz          # -> interactive genome browser
 ```
 
-Every normal run also writes a `.readmapdb.npz` cache so the browser never has to re-read the BTOP file.
+Every normal run also writes a `.readriftdb.npz` cache so the browser never has to re-read the BTOP file.
 
 ### 1.1 Input record contract (BTOP columns)
 
@@ -57,9 +57,9 @@ Malformed lines are counted and skipped, never fatal. Blank lines and `#` commen
 ## 2. Package layout
 
 ```
-readmap/
+readrift/
 ├── __init__.py       main() — entry point and `browse` subcommand dispatch
-├── __main__.py       python -m readmap
+├── __main__.py       python -m readrift
 ├── cli.py            argparse, built from the same option table the front page reads
 ├── params.py         OPTIONS table + the frozen, resolved Params
 ├── models.py         Hit, ReadGroup, Contig, Annotation, Metadata, Segment, ...
@@ -78,7 +78,7 @@ readmap/
 │   ├── frontpage.py    parameters, legend, project info, statistics, provenance
 │   └── plots.py        figures 1–7
 ├── browser/
-│   ├── store.py        the .readmapdb.npz cache: build, open, query by region
+│   ├── store.py        the .readriftdb.npz cache: build, open, query by region
 │   ├── region.py       one window, packed into lanes   <- shared by API and export
 │   ├── server.py       stdlib HTTP server, loopback only
 │   ├── export.py       the region on screen -> PDF/PNG
@@ -103,28 +103,28 @@ flowchart TD
     G --> H["render.write_pdf -> <out>.pdf"]
     F --> I["report.write_report -> <out>_Analysis.tsv  (-a)"]
     F --> J["extract.run_extraction -> read list + sequences  (-e)"]
-    F --> K["browser.store.build_store -> <out>.readmapdb.npz"]
-    K --> L["browser.server.serve  (readmap browse)"]
+    F --> K["browser.store.build_store -> <out>.readriftdb.npz"]
+    K --> L["browser.server.serve  (readrift browse)"]
 ```
 
 Stage by stage (`pipeline.py`):
 
 | # | Stage | Where | Produces |
 |---|---|---|---|
-| 0 | Entry, subcommand dispatch | `readmap/__init__.py:14` | `run()` or `browse()` |
-| 1 | Parse + validate | `readmap/cli.py:161`, `readmap/params.py:325` | frozen `Params`; `SystemExit("ERROR: …")` on a bad file or impossible geometry |
-| 2 | Reference | `readmap/inputs/reference.py:79` | `Reference` — contigs longest-first, annotations, metadata, alias map |
-| 3 | BTOP stream | `readmap/inputs/btop.py:111` | lazy `Iterator[list[Hit]]`, reads shorter than `-r` already dropped |
-| 4 | Extraction index (only `-e`) | `readmap/extract.py:78` | the same iterator, indexing each `Hit` as it passes |
-| 5 | Classification | `readmap/classify.py:231` | lazy `Iterator[ReadGroup]` |
-| 6 | **Statistics — this is what drains 3–5** | `readmap/stats.py:186` | `(Stats, list[ReadGroup])` |
-| 7 | Accession cross-check | `readmap/pipeline.py:125` | exit code 2 if *no* accession resolved, unless `--allow-unknown-contigs` |
-| 8 | Layout | `readmap/layout.py:296` | `dict[str, ContigLayout]`; lane overflow appended to `notes` |
-| 9 | PDF | `readmap/render/__init__.py:37` | `<out>.pdf` (skipped by `--no-pdf`) |
-| 10 | Analysis TSV | `readmap/report.py:51` | `<out>_Analysis.tsv` (only with `-a`) |
-| 11 | Read extraction | `readmap/extract.py:88` | `extract-reads-list_<contig>_<start>_<end>.txt` + `.fastq`/`.fasta` |
-| 12 | Browser cache | `readmap/browser/store.py:171` | `<out>.readmapdb.npz` (skipped by `--no-cache`) |
-| 13 | Console summary | `readmap/pipeline.py:268` | class counts, coverage, N50, notes, elapsed time |
+| 0 | Entry, subcommand dispatch | `readrift/__init__.py:14` | `run()` or `browse()` |
+| 1 | Parse + validate | `readrift/cli.py:161`, `readrift/params.py:325` | frozen `Params`; `SystemExit("ERROR: …")` on a bad file or impossible geometry |
+| 2 | Reference | `readrift/inputs/reference.py:79` | `Reference` — contigs longest-first, annotations, metadata, alias map |
+| 3 | BTOP stream | `readrift/inputs/btop.py:111` | lazy `Iterator[list[Hit]]`, reads shorter than `-r` already dropped |
+| 4 | Extraction index (only `-e`) | `readrift/extract.py:78` | the same iterator, indexing each `Hit` as it passes |
+| 5 | Classification | `readrift/classify.py:231` | lazy `Iterator[ReadGroup]` |
+| 6 | **Statistics — this is what drains 3–5** | `readrift/stats.py:186` | `(Stats, list[ReadGroup])` |
+| 7 | Accession cross-check | `readrift/pipeline.py:125` | exit code 2 if *no* accession resolved, unless `--allow-unknown-contigs` |
+| 8 | Layout | `readrift/layout.py:296` | `dict[str, ContigLayout]`; lane overflow appended to `notes` |
+| 9 | PDF | `readrift/render/__init__.py:37` | `<out>.pdf` (skipped by `--no-pdf`) |
+| 10 | Analysis TSV | `readrift/report.py:51` | `<out>_Analysis.tsv` (only with `-a`) |
+| 11 | Read extraction | `readrift/extract.py:88` | `extract-reads-list_<contig>_<start>_<end>.txt` + `.fastq`/`.fasta` |
+| 12 | Browser cache | `readrift/browser/store.py:171` | `<out>.readriftdb.npz` (skipped by `--no-cache`) |
+| 13 | Console summary | `readrift/pipeline.py:268` | class counts, coverage, N50, notes, elapsed time |
 
 Ordering constraints that matter:
 
@@ -134,7 +134,7 @@ Ordering constraints that matter:
 
 `pipeline.analyse(params) -> Analysis` is the whole expensive front half (`Reference`, `Stats`, `list[ReadGroup]`, `notes`, optional `ReadIndex`). Everything downstream — PDF, TSV, extraction, cache — derives from `Analysis` and nothing else, which is why `browse` can reuse it unchanged.
 
-`browse` (`readmap/pipeline.py:310`): with a cache path it goes straight to `BrowserStore.open`; with reference + BTOP it tries to reuse `<out>.readmapdb.npz`, checks `is_stale(params)`, rebuilds with a printed reason if needed (or unconditionally with `--rebuild`), then calls `browser.server.serve`. Stages 8–11 never run — `parse_browse_args` forces `no_pdf=True`.
+`browse` (`readrift/pipeline.py:310`): with a cache path it goes straight to `BrowserStore.open`; with reference + BTOP it tries to reuse `<out>.readriftdb.npz`, checks `is_stale(params)`, rebuilds with a printed reason if needed (or unconditionally with `--rebuild`), then calls `browser.server.serve`. Stages 8–11 never run — `parse_browse_args` forces `no_pdf=True`.
 
 ---
 
@@ -474,11 +474,11 @@ Right column: **Project and assembly** (`metadata.rows()`, or the reference's fi
 
 ## 11. The interactive browser (`browser/`)
 
-The PDF is a poster — several pages ~149 inches wide on a real dataset. `readmap browse` serves the same data as a pan-and-zoom genome browser, laid out the way the poster is: forward-strand reads above the coordinate axis, reverse-strand reads below it, the coverage profile standing on the axis and the gene annotations hanging under it. Every read is coloured by class, structural events are marked on the axis, click for read details, `n` jumps to the next event, and the region on screen exports to PDF or PNG.
+The PDF is a poster — several pages ~149 inches wide on a real dataset. `readrift browse` serves the same data as a pan-and-zoom genome browser, laid out the way the poster is: forward-strand reads above the coordinate axis, reverse-strand reads below it, the coverage profile standing on the axis and the gene annotations hanging under it. Every read is coloured by class, structural events are marked on the axis, click for read details, `n` jumps to the next event, and the region on screen exports to PDF or PNG.
 
 `browser/__init__.py` exposes exactly one name, `serve()`, as a lazy re-export, so the PDF path never imports the browser.
 
-### 11.1 `store.py` — the `.readmapdb.npz` cache
+### 11.1 `store.py` — the `.readriftdb.npz` cache
 
 One **uncompressed** `numpy.savez` archive written to `<target>.tmp` and `Path.replace`d into position, so a crash mid-write cannot leave a half-cache. `FORMAT_VERSION = 2`; a mismatch raises `StoreFormatError` and the cache is rebuilt, never misread. (Version 2 added the annotation `product` / `locus_tag` / `note` blobs.)
 
@@ -613,7 +613,7 @@ Derived properties: `axis_width`, `page_width`, `page_height`, `k_max`, `divisio
 | File | When |
 |---|---|
 | `<out>.pdf` | always, unless `--no-pdf` |
-| `<out>.readmapdb.npz` | always, unless `--no-cache` |
+| `<out>.readriftdb.npz` | always, unless `--no-cache` |
 | `<out>_Analysis.tsv` | with `-a` |
 | `extract-reads-list_<contig>_<start>_<end>.txt` / `.fastq`/`.fasta` | with `-e` |
 
@@ -666,14 +666,14 @@ These are the rules that keep the printed map, the browser and the exports agree
 
 | Path | What it is |
 |---|---|
-| `readmap/` | the package (§2) |
+| `readrift/` | the package (§2) |
 | `tests/` | the test suite (§13) |
 | `README.md` | user manual: install, use, browse, output, options |
 | `CHANGES.md` | every way the output differs from `read_print_23.pl` |
 | `code_structure.md` | this document |
 | `legacy/port_plan.md` | the audit of the Perl original and the plan this package was built from — historical, not maintained. It sits beside the Perl it audits |
 | `CLAUDE.md` | project instructions for AI assistants |
-| `pyproject.toml` | **the single source of truth for packaging**: dependencies, the `dev` extra (`pytest`, `ruff`), `readmap = "readmap:main"`, `browser/static/*` as package data, the MIT licence, and the ruff and pytest configuration. There is no `requirements.txt` — it duplicated the dependency list and drifted from it |
+| `pyproject.toml` | **the single source of truth for packaging**: dependencies, the `dev` extra (`pytest`, `ruff`), `readrift = "readrift:main"`, `browser/static/*` as package data, the MIT licence, and the ruff and pytest configuration. There is no `requirements.txt` — it duplicated the dependency list and drifted from it |
 | `LICENSE` | MIT |
 | `.github/workflows/ci.yml` | CI: `pytest` + `ruff` across three platforms and four Python versions (§13) |
 | `legacy/read_print_23.pl` | the original Perl program, kept as the reference the port was audited against — `CHANGES.md` cites line numbers in it. Unmaintained and never run; `legacy/README.md` says so |
@@ -681,11 +681,11 @@ These are the rules that keep the printed map, the browser and the exports agree
 | `.gitattributes` | `* text=auto` — LF in the repository, native on checkout |
 | `AP027148.gb` | real multi-`LOCUS` GenBank reference — the sample input |
 | `DRR325755.btop` | real BLAST BTOP alignment of run DRR325755 against it (8 columns, no trace) |
-| `DRR325755.pdf`, `DRR325755.readmapdb.npz` | generated output from a run over the sample data |
+| `DRR325755.pdf`, `DRR325755.readriftdb.npz` | generated output from a run over the sample data |
 
 **Not in version control.** The sample data and everything generated from it are
 ignored: `*.btop`, `*.gb`, `*.fa`/`*.fasta`/`*.fastq`, `*.gz`, `*.pdf`,
-`*.readmapdb.npz`, `*_Analysis.tsv`, `extract-reads-list_*`, plus the usual
+`*.readriftdb.npz`, `*_Analysis.tsv`, `extract-reads-list_*`, plus the usual
 Python and editor caches. `DRR325755.btop` is ~985 MB — an order of magnitude
 past what a git remote will accept — and `AP027148.gb` is a public accession, so
 neither belongs in history. A clone is source only; point it at your own inputs.

@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import random
 
-from readmap.classify import (
+from readrift.classify import (
     ClassifyStats,
     classify_hits,
     classify_stream,
@@ -16,11 +16,11 @@ from readmap.classify import (
     select_hits,
     select_non_overlapping,
 )
-from readmap.inputs.btop import BtopStats, iter_read_groups
-from readmap.inputs.reference import load_reference
-from readmap.labels import LabelAssigner
-from readmap.models import Hit, ReadClass
-from readmap.params import Params
+from readrift.inputs.btop import BtopStats, iter_read_groups
+from readrift.inputs.reference import load_reference
+from readrift.labels import LabelAssigner
+from readrift.models import Hit, ReadClass
+from readrift.params import Params
 from tests.conftest import DROPPED, EXPECTED
 
 

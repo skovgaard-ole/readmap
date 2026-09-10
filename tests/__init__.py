@@ -1,1 +1,1 @@
-"""Test package for readmap."""
+"""Test package for readrift."""

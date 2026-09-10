@@ -5,16 +5,16 @@ from __future__ import annotations
 from dataclasses import replace
 from pathlib import Path
 
-from readmap import layout as layout_module
-from readmap import stats as stats_module
-from readmap.classify import ClassifyStats, classify_stream
-from readmap.inputs.btop import BtopStats, iter_read_groups
-from readmap.inputs.reference import load_reference
-from readmap.labels import LabelAssigner
-from readmap.layout import split_across_pages
-from readmap.models import ReadClass
-from readmap.params import ExtractSpec, Params
-from readmap.pipeline import run
+from readrift import layout as layout_module
+from readrift import stats as stats_module
+from readrift.classify import ClassifyStats, classify_stream
+from readrift.inputs.btop import BtopStats, iter_read_groups
+from readrift.inputs.reference import load_reference
+from readrift.labels import LabelAssigner
+from readrift.layout import split_across_pages
+from readrift.models import ReadClass
+from readrift.params import ExtractSpec, Params
+from readrift.pipeline import run
 
 
 def _pipeline_inputs(params: Params):

@@ -3,7 +3,7 @@ requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "readmap"
+name = "readrift"
 version = "1.0.0"
 description = "Visualise long sequence reads mapped onto a reference by BLAST (BTOP)"
 readme = "README.md"
@@ -32,20 +32,20 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/skovgaard-ole/readmap"
-Repository = "https://github.com/skovgaard-ole/readmap"
-Issues = "https://github.com/skovgaard-ole/readmap/issues"
+Homepage = "https://github.com/skovgaard-ole/readrift"
+Repository = "https://github.com/skovgaard-ole/readrift"
+Issues = "https://github.com/skovgaard-ole/readrift/issues"
 
 [project.scripts]
-readmap = "readmap:main"
+readrift = "readrift:main"
 
 [tool.setuptools.packages.find]
-include = ["readmap*"]
+include = ["readrift*"]
 
 [tool.setuptools.package-data]
 # The browser front end is loaded from disk at request time, so it has to
 # survive installation as a package rather than only existing in a checkout.
-readmap = ["browser/static/*"]
+readrift = ["browser/static/*"]
 
 # Pins pytest's rootdir to this file's directory, so `pytest` finds the suite
 # from any working directory inside the checkout. The test modules do

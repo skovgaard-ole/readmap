@@ -44,7 +44,7 @@ jobs:
 
       - name: Test
         # No DISPLAY, no MPLBACKEND, no Ghostscript on any of these runners.
-        # readmap is headless by construction (code_structure.md invariant 12),
+        # readrift is headless by construction (code_structure.md invariant 12),
         # so a green Linux job here is that invariant being tested rather than
         # asserted.
         run: python -m pytest -q

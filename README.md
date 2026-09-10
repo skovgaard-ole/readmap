@@ -1,13 +1,13 @@
-# readmap
+# ReadRift
 
-[![CI](https://github.com/skovgaard-ole/readmap/actions/workflows/ci.yml/badge.svg)](https://github.com/skovgaard-ole/readmap/actions/workflows/ci.yml)
+[![CI](https://github.com/skovgaard-ole/readrift/actions/workflows/ci.yml/badge.svg)](https://github.com/skovgaard-ole/readrift/actions/workflows/ci.yml)
 
 Visualise long sequence reads (Oxford Nanopore, PacBio) mapped onto a reference
 by BLAST, classified by how their alignment divides.
 
 Reads whose pieces map far apart, in opposite orientation, or to a different
 contig are evidence of structural variation, inversions, transposition, phage
-excision or circularity. `readmap` draws them all on one wide map, plus a
+excision or circularity. `readrift` draws them all on one wide map, plus a
 summary figures section.
 
 Python port of `legacy/read_print_23.pl`, which is kept in this repository as
@@ -24,8 +24,8 @@ compiler** in the picture — the PDF is written directly, and nothing shells ou
 Get the code, then pick the line for your platform:
 
 ```bash
-git clone https://github.com/skovgaard-ole/readmap.git
-cd readmap
+git clone https://github.com/skovgaard-ole/readrift.git
+cd readrift
 ```
 
 **Linux / macOS**
@@ -45,11 +45,11 @@ pip install -e .
 **conda**, on any platform — if that is how you already work:
 
 ```bash
-conda create -n readmap python=3.11 && conda activate readmap
+conda create -n readrift python=3.11 && conda activate readrift
 pip install -e .
 ```
 
-Any of them gives you a `readmap` command on your PATH. `python -m readmap`
+Any of them gives you a `readrift` command on your PATH. `python -m readrift`
 works identically and needs no install beyond the dependencies, so both spellings
 appear below.
 
@@ -71,7 +71,7 @@ Python 3.10–3.13.
 ## Use
 
 ```bash
-python -m readmap AP027148.gb DRR325755.btop -x 10
+python -m readrift AP027148.gb DRR325755.btop -x 10
 ```
 
 Produces `DRR325755.pdf`.
@@ -100,7 +100,7 @@ fetched rather than cloned:
 
 Then align the reads against the reference with the `blastn -outfmt` above to
 produce the `.btop`. That alignment is the slow step, and it is BLAST's, not
-`readmap`'s.
+`readrift`'s.
 
 Point it at your own reference and reads instead and nothing changes — the two
 file names in the examples carry no special meaning.
@@ -110,25 +110,25 @@ file names in the examples carry no special meaning.
 Include shorter reads, require longer matches, cap the coverage drawn:
 
 ```bash
-python -m readmap ref.fa reads.btop -r 4000 -m 1000 -x 20
+python -m readrift ref.fa reads.btop -r 4000 -m 1000 -x 20
 ```
 
 Add the alignment-identity figure and the batch summary table:
 
 ```bash
-python -m readmap ref.gb reads.btop --identity -a
+python -m readrift ref.gb reads.btop --identity -a
 ```
 
 Pull the reads covering a region back out of the original reads file:
 
 ```bash
-python -m readmap ref.fa reads.btop -e reads.fastq.gz,chr1,50000,100000
+python -m readrift ref.fa reads.btop -e reads.fastq.gz,chr1,50000,100000
 ```
 
 Maps only, no figures:
 
 ```bash
-python -m readmap ref.fa reads.btop --no-plots
+python -m readrift ref.fa reads.btop --no-plots
 ```
 
 ## Browse
@@ -137,7 +137,7 @@ The PDF is a poster — on a real dataset, several pages 149 inches wide. To loo
 around it interactively:
 
 ```bash
-python -m readmap browse DRR325755.readmapdb.npz
+python -m readrift browse DRR325755.readriftdb.npz
 ```
 
 That opens a genome browser in your web browser: pan and zoom the reference,
@@ -145,7 +145,7 @@ with a coverage track, the gene annotations, and every read coloured by its
 class. Click a read for its real name and every place it aligned; press `n` to
 jump to the next structural event; export the region on screen to PDF or PNG.
 
-Every normal run writes that `.readmapdb.npz` cache alongside the PDF, so
+Every normal run writes that `.readriftdb.npz` cache alongside the PDF, so
 browsing never re-reads the BTOP file. Reading and classifying a gigabyte-scale
 BTOP takes minutes; opening the cache takes about a second. Use `--no-cache` to
 skip writing it, or `--no-pdf` to write only the cache.
@@ -154,7 +154,7 @@ If no cache exists yet, `browse` builds one from the same arguments a normal run
 takes, then serves it:
 
 ```bash
-python -m readmap browse ref.gb reads.btop -x 10
+python -m readrift browse ref.gb reads.btop -x 10
 ```
 
 The cache is rebuilt automatically when an input file or a filtering option
@@ -194,7 +194,7 @@ narrow the class filter to bring them back.
 | File | When |
 |---|---|
 | `<prefix>.pdf` | always, unless `--no-pdf` |
-| `<prefix>.readmapdb.npz` | always, unless `--no-cache` — the browser cache |
+| `<prefix>.readriftdb.npz` | always, unless `--no-cache` — the browser cache |
 | `<prefix>_Analysis.tsv` | with `-a` |
 | `extract-reads-list_<contig>_<start>_<end>.txt` | with `-e` — one line per read |
 | `extract-reads-list_<contig>_<start>_<end>.fastq` / `.fasta` | with `-e` — the sequences |
@@ -204,7 +204,7 @@ provenance) → figures → the read maps, one contig at a time.
 
 ## Options
 
-`python -m readmap --help` lists everything. Every short flag from the Perl
+`python -m readrift --help` lists everything. Every short flag from the Perl
 version keeps its letter and meaning.
 
 Three options were split apart because the Perl overloaded one:
@@ -237,7 +237,7 @@ the exact rule and what it is careful *not* to remove.
 ## Layout
 
 ```
-readmap/
+readrift/
 ├── cli.py          argparse, built from the same table the front page reads
 ├── params.py       option table + resolved Params
 ├── models.py       Hit, ReadGroup, Contig, Annotation, Segment, ...
@@ -251,7 +251,7 @@ readmap/
 ├── report.py       the analysis TSV
 ├── render/         theme, mapfig, frontpage, plots, PDF assembly
 ├── browser/        the interactive view
-│   ├── store.py      the .readmapdb.npz cache: build and query by region
+│   ├── store.py      the .readriftdb.npz cache: build and query by region
 │   ├── region.py     one window, packed into lanes  <- shared by API and export
 │   ├── server.py     stdlib HTTP server, loopback only
 │   ├── export.py     the region on screen -> PDF/PNG

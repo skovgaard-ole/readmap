@@ -6,12 +6,12 @@ from pathlib import Path
 
 import pytest
 
-from readmap.btop_trace import parse as parse_btop
-from readmap.inputs.btop import BtopStats, iter_read_groups, parse_line
-from readmap.inputs.fasta import accession_from_header
-from readmap.inputs.reads import iter_records
-from readmap.inputs.reference import load_reference
-from readmap.labels import gene_label
+from readrift.btop_trace import parse as parse_btop
+from readrift.inputs.btop import BtopStats, iter_read_groups, parse_line
+from readrift.inputs.fasta import accession_from_header
+from readrift.inputs.reads import iter_records
+from readrift.inputs.reference import load_reference
+from readrift.labels import gene_label
 from tests.conftest import CONTIG_LENGTHS
 
 

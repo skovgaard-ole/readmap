@@ -5,10 +5,10 @@
 # Validate with: pip install cffconvert && cffconvert --validate
 cff-version: 1.2.0
 message: "If you use this software, please cite it using these metadata."
-title: readmap
+title: ReadRift
 abstract: >-
   Visualisation of assembly errors, prophage induction and genomic variation by
-  re-mapping long sequence reads. readmap classifies every read by how its BLAST
+  re-mapping long sequence reads. ReadRift classifies every read by how its BLAST
   alignment divides - contiguously, or into pieces that map far apart, in
   opposite orientation, or onto a different contig - and draws the result as a
   wide multi-page map plus an interactive genome browser. Reads that divide are
@@ -18,7 +18,7 @@ type: software
 version: 1.0.0
 date-released: "2026-09-10"
 license: MIT
-repository-code: "https://github.com/skovgaard-ole/readmap"
+repository-code: "https://github.com/skovgaard-ole/readrift"
 authors:
   - family-names: Skovgaard
     given-names: Ole

@@ -13,6 +13,10 @@ olesdata/
 
 # --- Generated output --------------------------------------------------
 *.pdf
+*.readriftdb.npz
+# Caches written before the rename to ReadRift. Note: .gitignore has no inline
+# comments - a '#' is only a comment at the start of a line, so this one gets
+# its own line or it becomes part of the pattern above and matches nothing.
 *.readmapdb.npz
 *_Analysis.tsv
 extract-reads-list_*

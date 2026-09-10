@@ -274,9 +274,9 @@ To be explicit, the audit did **not** find problems with:
 ### 5.2 Package layout
 
 ```
-readmap/
+readrift/
 ├── __init__.py           # version, public API
-├── __main__.py           # python -m readmap
+├── __main__.py           # python -m readrift
 ├── cli.py                # argparse -> Params; help text; validation
 ├── params.py             # @dataclass(frozen=True) Params + defaults + metadata table
 ├── models.py             # Hit, ReadGroup, ReadClass, Contig, Annotation, Junction, Stats
@@ -495,16 +495,16 @@ packages remain the map of who owns what for any further change.
 | WP | Status | Where it landed |
 |---|---|---|
 | WP0 | done | `tests/conftest.py` — fixtures are generated, not checked in; `EXPECTED` states the hand-derived classification of every read |
-| WP1 | done | `readmap/inputs/btop.py`, `readmap/classify.py`, `tests/test_classify.py` (includes a 2 000-case cross-check of the interval sweep against a naive per-base implementation) |
-| WP2 | done | `readmap/inputs/{reference,genbank,fasta}.py`, `tests/test_inputs.py` |
-| WP3 | done | `readmap/layout.py`, `tests/test_layout_and_output.py` |
-| WP4 | done | `readmap/render/{mapfig,theme}.py` — **not yet visually compared against a Perl-generated PDF; that is the one acceptance criterion still open** |
-| WP5 | done | `readmap/render/frontpage.py`, `readmap/report.py` |
-| WP6 | done | `readmap/render/plots.py` — figures 1–5 and the table |
-| WP6b | done | `readmap/btop_trace.py` + `--identity` |
-| WP7 | done | `readmap/extract.py`, `readmap/inputs/reads.py` |
-| WP8 | done | `readmap/cli.py`, `readmap/params.py` |
-| WP9 | done | `CHANGES.md`; validation in `readmap/pipeline.py` |
+| WP1 | done | `readrift/inputs/btop.py`, `readrift/classify.py`, `tests/test_classify.py` (includes a 2 000-case cross-check of the interval sweep against a naive per-base implementation) |
+| WP2 | done | `readrift/inputs/{reference,genbank,fasta}.py`, `tests/test_inputs.py` |
+| WP3 | done | `readrift/layout.py`, `tests/test_layout_and_output.py` |
+| WP4 | done | `readrift/render/{mapfig,theme}.py` — **not yet visually compared against a Perl-generated PDF; that is the one acceptance criterion still open** |
+| WP5 | done | `readrift/render/frontpage.py`, `readrift/report.py` |
+| WP6 | done | `readrift/render/plots.py` — figures 1–5 and the table |
+| WP6b | done | `readrift/btop_trace.py` + `--identity` |
+| WP7 | done | `readrift/extract.py`, `readrift/inputs/reads.py` |
+| WP8 | done | `readrift/cli.py`, `readrift/params.py` |
+| WP9 | done | `CHANGES.md`; validation in `readrift/pipeline.py` |
 
 Deviation from §5.2: nothing else. The `io/` package is `inputs/` per D6, and
 `btop_trace.py` sits at the top level rather than under `inputs/` because it
@@ -537,7 +537,7 @@ Confirmed with the user on 2026-07-29. These are binding on all work packages.
 
 | # | Decision | Consequence |
 |---|---|---|
-| **D1** | **Read names: mixed / unknown.** | Never rewrite read IDs (B01). Group on the real `qseqid`. `R_<n>` survives only as a *display label*, derived from the legacy pattern when it matches and from a counter when it does not, with collision detection. At startup, report how many read names fail the legacy pattern — that number tells the user directly whether their existing Perl outputs were affected. Lives in `readmap/labels.py`. |
+| **D1** | **Read names: mixed / unknown.** | Never rewrite read IDs (B01). Group on the real `qseqid`. `R_<n>` survives only as a *display label*, derived from the legacy pattern when it matches and from a counter when it does not, with collision detection. At startup, report how many read names fail the legacy pattern — that number tells the user directly whether their existing Perl outputs were affected. Lives in `readrift/labels.py`. |
 | **D2** | **Write PDF directly.** | No PostScript, no Ghostscript, no `.ps` intermediates. Kills B09 entirely and removes B29. Single `PdfPages` document. |
 | **D3** | **Coverage = matched bases only**, applied uniformly to all three classes. | Fixes B10. Sum of `hit.sspan` over all surviving HSPs. Skipped reference inside a divided read is *not* counted as covered. The per-base depth array behind Figure 2 uses the same definition, so the plot and the scalar agree. |
 | **D4** | Plots section goes **after the front page, before the maps**. | Summary before detail. Suppressible with `--no-plots`. |
