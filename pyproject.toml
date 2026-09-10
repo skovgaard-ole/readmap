@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "readmap"
+version = "1.0.0"
+description = "Visualise long sequence reads mapped onto a reference by BLAST (BTOP)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Ole Skovgaard" }]
+keywords = ["bioinformatics", "genomics", "nanopore", "pacbio", "blast", "structural-variation"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+dependencies = [
+    "matplotlib>=3.6",
+    "numpy>=1.22",
+]
+
+# Everything needed to run the checks CI runs: pip install -e ".[dev]"
+[project.optional-dependencies]
+dev = [
+    "pytest>=7",
+    "ruff>=0.5",
+]
+
+[project.scripts]
+readmap = "readmap:main"
+
+[tool.setuptools.packages.find]
+include = ["readmap*"]
+
+[tool.setuptools.package-data]
+# The browser front end is loaded from disk at request time, so it has to
+# survive installation as a package rather than only existing in a checkout.
+readmap = ["browser/static/*"]
+
+# Pins pytest's rootdir to this file's directory, so `pytest` finds the suite
+# from any working directory inside the checkout. The test modules do
+# `from tests.conftest import ...`, which needs the project root on sys.path;
+# tests/ carries an __init__.py, so pytest's default prepend import mode walks
+# up past it and inserts the root itself.
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM"]
+# E501   line length is the formatter's business, not the linter's.
+# UP015  `open(p, "r", ...)` is redundant, and deliberate: each of the four
+#        gzip-aware openers writes it directly under `gzip.open(p, "rt", ...)`,
+#        where spelling out both modes is what makes the pair legible.
+ignore = ["E501", "UP015"]

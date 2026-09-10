@@ -1,0 +1,2 @@
+Start by reading code_structure.md, and update it upon completion.
+You may run `python -m pytest` and other read-only checks. Do not run the full pipeline against the sample data (`DRR325755.btop` is ~985 MB and takes minutes) — assume the user will do that.

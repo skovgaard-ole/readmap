@@ -1,0 +1,45 @@
+# --- Sample data -------------------------------------------------------
+# Big, regenerable or re-downloadable, and not source. DRR325755.btop alone
+# is ~985 MB, well over GitHub's 100 MB per-file limit.
+*.btop
+*.gb
+*.gbk
+*.fa
+*.fasta
+*.fastq
+*.fq
+*.gz
+olesdata/
+
+# --- Generated output --------------------------------------------------
+*.pdf
+*.readmapdb.npz
+*_Analysis.tsv
+extract-reads-list_*
+
+# --- Python ------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# --- Editors / OS ------------------------------------------------------
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+
+# --- Local, not project ------------------------------------------------
+# Per-machine tool permissions, and personal scratch notes. CLAUDE.md is
+# tracked (it is project instructions); this file is one user's settings.
+.claude/settings.local.json
+Lars_Hints.txt
+
+# To keep an ignored file anyway (e.g. a small reference you want tracked):
+#   git add -f AP027148.gb

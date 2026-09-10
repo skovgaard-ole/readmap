@@ -1,0 +1,14 @@
+# Normalise line endings in the repository to LF, check out native on Windows.
+# Prevents whole-file CRLF diffs if the code is ever touched from Linux/macOS.
+* text=auto
+
+*.py   text diff=python
+*.pl   text
+*.md   text
+*.js   text
+*.css  text
+*.html text
+*.toml text
+
+*.npz  binary
+*.pdf  binary

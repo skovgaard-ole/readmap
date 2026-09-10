@@ -1,0 +1,370 @@
+/* readmap browser
+ *
+ * Colours that carry meaning -- read classes, inversions, annotation groups --
+ * are NOT defined here.  They are served from /api/meta, which reads them from
+ * readmap/render/theme.py, so the screen and the printed PDF cannot drift
+ * apart.  This file styles only the chrome.
+ */
+
+:root {
+  --surface: #ffffff;
+  --surface-sunken: #f6f5f1;
+  --surface-raised: #fbfaf7;
+  --border: #e1e0d9;
+  --border-strong: #cfcec5;
+  --ink: #0b0b0b;
+  --ink-secondary: #52514e;
+  --ink-muted: #898781;
+  --accent: #2a78d6;
+  --radius: 5px;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+  --sans: ui-sans-serif, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --toolbar-height: 58px;
+  --status-height: 26px;
+  --panel-width: 340px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 13px;
+}
+
+/* ---- toolbar ---------------------------------------------------------- */
+
+#toolbar {
+  height: var(--toolbar-height);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-raised);
+}
+
+.brand { display: flex; flex-direction: column; line-height: 1.25; }
+.brand .title { font-weight: 650; letter-spacing: 0.01em; }
+.brand .sample {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-muted);
+  max-width: 190px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.field { display: flex; flex-direction: column; gap: 3px; position: relative; }
+.field.grow { flex: 1 1 auto; min-width: 220px; }
+.field > span {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ink-muted);
+}
+
+select, input[type="search"] {
+  font: inherit;
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 4px 7px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+  min-height: 26px;
+}
+input[type="search"] { width: 100%; }
+select:focus, input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+
+.buttons { display: flex; gap: 4px; }
+button {
+  font: inherit;
+  font-size: 12px;
+  padding: 4px 9px;
+  min-height: 26px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink-secondary);
+  cursor: pointer;
+}
+button:hover { background: var(--surface-sunken); color: var(--ink); }
+button:active { transform: translateY(1px); }
+button:disabled { opacity: 0.45; cursor: default; }
+
+.filters { display: flex; gap: 10px; align-items: center; min-height: 26px; }
+.filters label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.filters .swatch {
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+  display: inline-block;
+}
+.filters input { margin: 0; accent-color: var(--accent); }
+
+/* ---- suggestions ------------------------------------------------------ */
+
+.suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  margin-top: 3px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  max-height: 320px;
+  overflow-y: auto;
+}
+.suggestions div {
+  padding: 6px 9px;
+  font-family: var(--mono);
+  font-size: 12px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+.suggestions div:last-child { border-bottom: 0; }
+.suggestions div:hover, .suggestions div.active { background: var(--surface-sunken); }
+.suggestions .kind {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+  min-width: 46px;
+}
+
+/* ---- layout ----------------------------------------------------------- */
+
+main {
+  display: flex;
+  height: calc(100% - var(--toolbar-height) - var(--status-height));
+}
+
+#view {
+  flex: 1 1 auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--surface);
+}
+
+/* The header sits between the two read panes, not above them: forward-strand
+ * reads run above the coordinate axis and reverse-strand reads below it, the
+ * way the printed map is drawn.  The header is the only fixed row; both read
+ * panes scroll away from the axis. */
+#header-canvas {
+  display: block;
+  flex: 0 0 auto;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+/* overflow-y is `scroll`, not `auto`, on purpose: the gutter is then always
+ * reserved, so the read canvases have a constant width and the ruler between
+ * them never shifts by a scrollbar when a dense region appears. */
+.strand-scroll {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+.strand-scroll canvas { display: block; width: 100%; }
+
+#view.panning { cursor: grabbing; }
+#view.over-read { cursor: pointer; }
+
+/* ---- tooltip ---------------------------------------------------------- */
+
+#tooltip {
+  position: absolute;
+  z-index: 20;
+  pointer-events: none;
+  background: rgba(17, 17, 17, 0.93);
+  color: #f7f7f5;
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.45;
+  padding: 6px 9px;
+  border-radius: var(--radius);
+  max-width: 340px;
+  white-space: pre;
+}
+
+/* ---- panel ------------------------------------------------------------ */
+
+#panel {
+  width: var(--panel-width);
+  flex: 0 0 var(--panel-width);
+  border-left: 1px solid var(--border);
+  background: var(--surface-raised);
+  overflow-y: auto;
+}
+#panel-body { padding: 14px 16px 40px; }
+
+#panel h2 {
+  font-size: 14px;
+  margin: 0 0 4px;
+  font-family: var(--mono);
+  word-break: break-all;
+}
+#panel h3 {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+  margin: 22px 0 7px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+#panel p { margin: 0 0 10px; line-height: 1.5; }
+.muted { color: var(--ink-muted); }
+
+#panel dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3px 12px;
+  margin: 0;
+  font-size: 12px;
+}
+#panel dt { color: var(--ink-muted); white-space: nowrap; }
+#panel dd { margin: 0; font-family: var(--mono); word-break: break-word; }
+#panel dl.keys dt { font-family: var(--mono); color: var(--ink-secondary); }
+#panel dl.keys dd { font-family: var(--sans); color: var(--ink-muted); }
+
+.badge {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-family: var(--mono);
+  color: #fff;
+}
+
+table.hits {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 11px;
+}
+table.hits th {
+  text-align: left;
+  font-weight: 500;
+  color: var(--ink-muted);
+  border-bottom: 1px solid var(--border);
+  padding: 3px 4px;
+}
+table.hits td {
+  padding: 3px 4px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+table.hits td.num { text-align: right; }
+
+#legend div.row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+#legend .swatch { width: 16px; height: 3px; border-radius: 2px; flex: 0 0 16px; }
+#legend .dot { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 8px; }
+
+#panel .row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+#panel .row .glyph { flex: 0 0 26px; overflow: visible; }
+
+/* Event marks carry a sentence each, so the row wraps and the triangle has to
+ * sit against the first line rather than float in the middle of the block. */
+#panel .row.event { align-items: flex-start; margin-bottom: 9px; line-height: 1.45; }
+#panel .row.event .glyph { flex: 0 0 16px; margin-top: 1px; }
+#panel .row.event strong { font-weight: 600; }
+#panel code {
+  font-family: var(--mono);
+  font-size: 11px;
+  background: var(--surface-sunken);
+  border-radius: 3px;
+  padding: 0 3px;
+}
+
+#notes p {
+  font-size: 11px;
+  color: var(--ink-secondary);
+  border-left: 2px solid var(--border-strong);
+  padding-left: 8px;
+  margin-bottom: 8px;
+}
+
+/* ---- status bar ------------------------------------------------------- */
+
+#status {
+  height: var(--status-height);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 0 14px;
+  border-top: 1px solid var(--border);
+  background: var(--surface-raised);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+}
+#status-busy { color: var(--accent); }
+#status-cursor { margin-left: auto; color: var(--ink-muted); }
+
+/* ---- dark ------------------------------------------------------------- */
+/* The map itself stays on a light surface: it is a print-derived figure and
+ * the palette was validated against white.  Only the chrome follows the
+ * system theme, so a dark-desktop user is not dazzled by the frame. */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface-sunken: #24231f;
+    --surface-raised: #1c1b18;
+    --border: #34332e;
+    --border-strong: #4a4841;
+    --ink: #f2f1ec;
+    --ink-secondary: #c3c1b9;
+    --ink-muted: #8d8b83;
+  }
+  body { background: #14130f; }
+  select, input[type="search"], button, .suggestions {
+    background: #14130f;
+    color: var(--ink);
+  }
+  button:hover { background: var(--surface-sunken); }
+  .suggestions div:hover, .suggestions div.active { background: var(--surface-sunken); }
+}
+
+@media (max-width: 1100px) {
+  :root { --panel-width: 280px; }
+  #toolbar { gap: 12px; flex-wrap: wrap; height: auto; padding: 8px 12px; }
+  main { height: calc(100% - 96px - var(--status-height)); }
+}

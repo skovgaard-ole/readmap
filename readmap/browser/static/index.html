@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>readmap browser</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<header id="toolbar">
+  <div class="brand">
+    <span class="title">readmap</span>
+    <span class="sample" id="sample">…</span>
+  </div>
+
+  <label class="field">
+    <span>Contig</span>
+    <select id="contig"></select>
+  </label>
+
+  <label class="field grow">
+    <span>Go to</span>
+    <input id="search" type="search" spellcheck="false" autocomplete="off"
+           placeholder="coordinate, gene or read name — e.g. ctgA:120000-160000">
+    <div id="suggestions" class="suggestions" hidden></div>
+  </label>
+
+  <div class="field">
+    <span>Show</span>
+    <div class="filters" id="filters"></div>
+  </div>
+
+  <div class="field">
+    <span>View</span>
+    <div class="buttons">
+      <button id="zoom-out" title="Zoom out (−)">−</button>
+      <button id="zoom-in" title="Zoom in (+)">+</button>
+      <button id="fit" title="Whole contig (f)">fit</button>
+      <button id="prev-event" title="Previous event (p)">◀ event</button>
+      <button id="next-event" title="Next event (n)">event ▶</button>
+      <button id="export-pdf" title="Export this view as PDF">PDF</button>
+      <button id="export-png" title="Export this view as PNG">PNG</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section id="view">
+    <!-- Mirrors the printed poster: forward reads above the coordinate axis,
+         reverse reads below it, the fixed header between them. -->
+    <div id="plus-scroll" class="strand-scroll">
+      <canvas id="plus-canvas"></canvas>
+    </div>
+    <canvas id="header-canvas"></canvas>
+    <div id="minus-scroll" class="strand-scroll">
+      <canvas id="minus-canvas"></canvas>
+    </div>
+    <div id="tooltip" hidden></div>
+  </section>
+
+  <aside id="panel">
+    <div id="panel-body">
+      <h2>Nothing selected</h2>
+      <p class="muted">Click a read to see its name, its class and every place
+      it aligned.</p>
+
+      <h3>Run</h3>
+      <dl id="run-info"></dl>
+
+      <h3>Legend</h3>
+      <div id="legend"></div>
+
+      <h3>Keys</h3>
+      <dl class="keys">
+        <dt>drag</dt><dd>pan</dd>
+        <dt>wheel</dt><dd>zoom at the cursor</dd>
+        <dt>shift+wheel</dt><dd>scroll the lanes under the cursor</dd>
+        <dt>← →</dt><dd>pan</dd>
+        <dt>+ −</dt><dd>zoom</dd>
+        <dt>f</dt><dd>whole contig</dd>
+        <dt>n p</dt><dd>next / previous structural event</dd>
+        <dt>esc</dt><dd>clear the selection</dd>
+      </dl>
+
+      <div id="notes"></div>
+    </div>
+  </aside>
+</main>
+
+<footer id="status">
+  <span id="status-region">—</span>
+  <span id="status-counts"></span>
+  <span id="status-cursor"></span>
+  <span id="status-busy" hidden>loading…</span>
+</footer>
+
+<script src="/app.js"></script>
+</body>
+</html>
